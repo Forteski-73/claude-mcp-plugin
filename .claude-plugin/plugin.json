@@ -1,0 +1,24 @@
+{
+  "name": "oxford-online-product-plugin",
+  "version": "0.2.0",
+  "description": "Conecta o Claude Code à API de Produtos e Imagens da Oxford Online (EF Core / C#)",
+  "author": {
+    "name": "Seu Nome"
+  },
+  "mcpServers": {
+    "oxford-online-product-api": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/mcp-server/index.js"],
+      "env": {
+        "API_BASE_URL": "${OXFORD_API_BASE_URL}",
+        "API_TOKEN": "${OXFORD_API_TOKEN}",
+        "AUTH_BASE_URL": "${OXFORD_AUTH_BASE_URL}",
+        "AUTH_API_KEY": "${OXFORD_AUTH_API_KEY}",
+        "OXFORD_USER": "${OXFORD_USER}",
+        "OXFORD_PASSWORD": "${OXFORD_PASSWORD}",
+        "OXFORD_ACCOUNT": "${OXFORD_ACCOUNT}",
+        "NODE_EXTRA_CA_CERTS": "C:\\Diones\\docbox\\.kaspersky-ca.pem"
+      }
+    }
+  }
+}

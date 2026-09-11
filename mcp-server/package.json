@@ -1,0 +1,10 @@
+{
+  "name": "oxford-online-product-mcp-server",
+  "version": "0.1.0",
+  "description": "Servidor MCP que expõe o ProductController da API Oxford Online ao Claude Code",
+  "type": "module",
+  "main": "index.js",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4"
+  }
+}

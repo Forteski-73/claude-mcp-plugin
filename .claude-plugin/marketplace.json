@@ -1,0 +1,13 @@
+{
+  "name": "oxford-local",
+  "description": "Marketplace local para o plugin da API de Produtos da Oxford Online",
+  "owner": {
+    "name": "Diones"
+  },
+  "plugins": [
+    {
+      "name": "oxford-online-product-plugin",
+      "source": "./"
+    }
+  ]
+}
