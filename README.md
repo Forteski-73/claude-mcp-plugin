@@ -1,63 +1,63 @@
 # MCP Plugin
 
-Plugin do Claude Code que expõe uma API REST como ferramentas MCP, com autenticação JWT (login automático + renovação de token) via servidor stdio em Node.js.
+Claude Code plugin that exposes a REST API as MCP tools, with JWT authentication (automatic login + token renewal) via a Node.js stdio server.
 
-## Requisitos
+## Requirements
 
 - Node.js 18+
 
-## Instalação
+## Installation
 
 ```bash
 cd mcp-server
 npm install
 ```
 
-## Configuração
+## Configuration
 
-Variáveis de ambiente:
+Environment variables:
 
-| Variável | Obrigatória | Descrição |
+| Variable | Required | Description |
 |---|---|---|
-| `API_BASE_URL` | sim | URL base da API (com versão, se aplicável) |
-| `API_TOKEN` | não* | Token JWT pronto |
-| `AUTH_BASE_URL` | não* | URL base do endpoint de login |
-| `AUTH_API_KEY` | não* | Bearer exigido pelo endpoint de login |
-| `OXFORD_USER` / `OXFORD_PASSWORD` / `OXFORD_ACCOUNT` | não* | Credenciais para login automático |
-| `NODE_EXTRA_CA_CERTS` | não | Caminho de CA extra, se a rede fizer inspeção SSL |
+| `API_BASE_URL` | yes | API base URL (including version, if applicable) |
+| `API_TOKEN` | no* | Ready-to-use JWT token |
+| `AUTH_BASE_URL` | no* | Base URL of the login endpoint |
+| `AUTH_API_KEY` | no* | Bearer token required by the login endpoint |
+| `OXFORD_USER` / `OXFORD_PASSWORD` / `OXFORD_ACCOUNT` | no* | Credentials for automatic login |
+| `NODE_EXTRA_CA_CERTS` | no | Path to an extra CA certificate, if the network does SSL inspection |
 
-\* Defina `API_TOKEN` **ou** o conjunto `AUTH_BASE_URL` + `AUTH_API_KEY` + `OXFORD_USER` + `OXFORD_PASSWORD` + `OXFORD_ACCOUNT`. Com login automático, o servidor chama `POST {AUTH_BASE_URL}/User/login`, guarda o JWT em memória e renova quando expira ou em resposta 401.
+\* Set `API_TOKEN` **or** the set `AUTH_BASE_URL` + `AUTH_API_KEY` + `OXFORD_USER` + `OXFORD_PASSWORD` + `OXFORD_ACCOUNT`. With automatic login, the server calls `POST {AUTH_BASE_URL}/User/login`, caches the JWT in memory, and renews it on expiry or on a 401 response.
 
-Nunca versione credenciais — sempre via variável de ambiente (shell ou `.env` fora do controle de versão).
+Never commit credentials — always set them via environment variable (shell or a `.env` file outside version control).
 
-## Uso local (dev)
-
-```bash
-claude --plugin-dir <caminho-do-projeto>
-```
-
-## Instalação como plugin
+## Local usage (dev)
 
 ```bash
-claude plugin marketplace add <caminho-do-projeto>
-claude plugin install <nome-do-plugin>@<nome-do-marketplace>
+claude --plugin-dir <project-path>
 ```
 
-- `plugin.json` e `marketplace.json` ficam em `.claude-plugin/` (exigido por `claude plugin validate`).
-- O plugin instalado usa uma **cópia em cache**, não o código-fonte direto. Depois de editar `index.js`, reinstale (`uninstall` + `install`) ou dê bump de versão em `plugin.json` + `claude plugin update` pra forçar o recarregamento.
-- Teste sempre numa conversa nova — um servidor MCP já em execução não recarrega o código sozinho.
+## Installing as a plugin
+
+```bash
+claude plugin marketplace add <project-path>
+claude plugin install <plugin-name>@<marketplace-name>
+```
+
+- `plugin.json` and `marketplace.json` live under `.claude-plugin/` (required by `claude plugin validate`).
+- An installed plugin runs from a **cached copy**, not the source directly. After editing `index.js`, reinstall (`uninstall` + `install`) or bump the version in `plugin.json` and run `claude plugin update` to force a reload.
+- Always test in a new conversation — a running MCP server doesn't reload code on its own.
 
 ## Troubleshooting
 
-- Variável de ambiente nova só vale pra processos abertos **depois** da mudança — feche e reabra o terminal/app.
-- Apps empacotados (ex.: Microsoft Store/MSIX) podem não recarregar o ambiente nem reiniciando — nesse caso, faça logoff/login no SO.
-- Erro `fetch failed (causa: SELF_SIGNED_CERT_IN_CHAIN)`: rede com inspeção SSL corporativa. Configure `NODE_EXTRA_CA_CERTS` apontando pro certificado da CA. Se a interpolação `${NODE_EXTRA_CA_CERTS}` não resolver no `env` do `plugin.json` (alguns hosts filtram variáveis com prefixo `NODE_`), use o valor literal do caminho em vez da referência.
+- A newly set environment variable only applies to processes started **after** the change — close and reopen the terminal/app.
+- Packaged apps (e.g., Microsoft Store/MSIX) may not pick up the environment even after restarting — if so, log off/log back into the OS.
+- `fetch failed (cause: SELF_SIGNED_CERT_IN_CHAIN)`: the network does corporate SSL inspection. Set `NODE_EXTRA_CA_CERTS` to the CA certificate path. If `${NODE_EXTRA_CA_CERTS}` interpolation doesn't resolve in `plugin.json`'s `env` block (some hosts filter out `NODE_`-prefixed variables), use the literal path value instead of the reference.
 
-## Tools de escrita/destrutivas
+## Write/destructive tools
 
-Tools marcadas `[ESCRITA]` ou `[DESTRUTIVO]` na descrição pedem confirmação antes de executar — isso ajuda o Claude a ser cauteloso, mas não é uma garantia técnica. Para bloquear completamente, remova a entrada correspondente do array `TOOLS` em `mcp-server/index.js`.
+Tools marked `[ESCRITA]` (write) or `[DESTRUTIVO]` (destructive) in their description prompt for confirmation before running — this helps Claude act cautiously, but it isn't a technical guarantee. To block them entirely, remove the corresponding entry from the `TOOLS` array in `mcp-server/index.js`.
 
-## Segurança
+## Security
 
-- Nunca coloque token/senha direto em `plugin.json` — sempre via variável de ambiente.
-- Cada pessoa deve usar sua própria credencial, respeitando as permissões que a API já aplica.
+- Never put a token/password directly in `plugin.json` — always use an environment variable.
+- Each person should use their own credential, respecting the permissions the API already enforces.
