@@ -4,6 +4,7 @@
   "description": "Servidor MCP que expõe o ProductController da API Oxford Online ao Claude Code",
   "type": "module",
   "main": "index.js",
+  "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.4"
   }
